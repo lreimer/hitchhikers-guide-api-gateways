@@ -53,5 +53,14 @@ dashboard:
 	@$(GCP) config config-helper --format=json | jq .credential.access_token
 	@open http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
 
+envoy-sources:
+	@mkdir -p envoyproxy && rm -rf envoyproxy/envoy/
+	@git clone --depth 1 https://github.com/envoyproxy/envoy envoyproxy/envoy
+
+envoy-simple:
+	@docker build -t envoy-simple:v1.0.0 envoyproxy/simple/
+	@docker tag envoy-simple:v1.0.0 lreimer/envour-simple:v1.0.0
+	@docker push lreimer/envour-simple:v1.0.0
+
 destroy:
 	@$(GCP) container clusters delete $(NAME) --async --quiet

@@ -1,0 +1,17 @@
+version: "2.3"
+
+services:
+  envoy-simple:
+    build:
+      context: .
+    image: envoy-simple:v1.0.0
+    mem_limit: 128m
+    ports:
+      - "9901:9901"
+      - "10000:10000"
+    networks:
+      - envoy
+
+networks:
+  envoy:
+    driver: bridge

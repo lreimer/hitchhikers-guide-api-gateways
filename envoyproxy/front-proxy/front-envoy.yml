@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-envoy
+spec:
+  type: LoadBalancer
+  selector:
+    name: front-envoy
+  ports:
+  - name: admin
+    port: 8001
+  - name: web
+    port: 8000
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: front-envoy
+  labels:
+    envoy.service: frontend
+spec:
+  selector:
+    matchLabels:
+      name: front-envoy
+  template:
+    metadata:
+      labels:
+        name: front-envoy
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: front-envoy
+        image: lreimer/front-envoy:v1.0.0
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 32Mi
+      terminationGracePeriodSeconds: 10

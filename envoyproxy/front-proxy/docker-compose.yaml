@@ -1,0 +1,44 @@
+version: "3.7"
+services:
+
+  front-envoy:
+    build:
+      context: frontend/
+    image: lreimer/front-envoy:v1.0.0
+    networks:
+      - envoymesh
+    expose:
+      - "80"
+      - "8001"
+    ports:
+      - "8000:80"
+      - "8001:8001"
+
+  service1:
+    build:
+      context: backend/
+    image: lreimer/service-envoy:v1.0.0
+    networks:
+      envoymesh:
+        aliases:
+          - service1
+    environment:
+      - SERVICE_NAME=1
+    expose:
+      - "80"
+
+  service2:
+    build:
+      context: backend/
+    image: lreimer/service-envoy:v2.0.0
+    networks:
+      envoymesh:
+        aliases:
+          - service2
+    environment:
+      - SERVICE_NAME=2
+    expose:
+      - "80"
+
+networks:
+  envoymesh: {}

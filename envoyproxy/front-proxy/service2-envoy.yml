@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service2
+spec:
+  type: NodePort
+  selector:
+    name: service2-envoy
+  ports:
+  - name: web
+    port: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service2-envoy
+  labels:
+    app: service2-envoy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: service2-envoy
+  template:
+    metadata:
+      labels:
+        name: service2-envoy
+    spec:
+      containers:
+      - name: service
+        image: lreimer/service-envoy:v2.0.0
+        command: ["python3", "/code/service.py"]
+        env:
+        - name: SERVICE_NAME
+          value: "2"
+        ports:
+        - containerPort: 8080
+      - name: envoy
+        image: lreimer/service-envoy:v2.0.0
+        command: ["envoy", "-c", "/etc/service-envoy.yaml", "--service-cluster", "service2"]
+        ports:
+        - containerPort: 80
+      terminationGracePeriodSeconds: 10

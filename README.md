@@ -25,6 +25,54 @@ install the different API gateways.
 $ make helm-install helm-init
 ```
 
+## Envoy Proxy
+
+### Simple Envoy Demo
+
+Simple demo to proxy Google using envoy. Sample taken from Envoy docs.
+
+```
+$ make envoy-simple
+$ docker-compose -f envoyproxy/simple/docker-compose.yml up
+$ http get localhost:10000
+$ open http://localhost:9901
+```
+
+### Envoy Front Proxy
+
+This basically is a modified demo of the official sandbox repo from Envoy.
+
+```
+$ cd front-proxy
+$ docker-compose up --build -d
+$ docker-compose ps
+
+$ http get localhost:8000/service/1
+$ http get localhost:8000/service/2
+
+$ docker-compose scale service1=3
+$ docker-compose ps
+
+$ http get localhost:8000/service/1
+$ http get localhost:8000/service/1
+$ http get localhost:8000/service/1
+
+$ docker push lreimer/front-envoy:v1.0.0
+$ docker push lreimer/service-envoy:v1.0.0
+$ docker push lreimer/service-envoy:v2.0.0
+
+$ kubectl apply -f front-envoy.yml
+$ kubectl apply -f service1-envoy.yml
+$ kubectl apply -f service2-envoy.yml
+
+$ kubectl get service
+
+$ http get http://<external-ip>:8000/service/1
+$ http get http://<external-ip>:8000/service/2
+$ http get http://<external-ip>:8000/service/1
+$ http get http://<external-ip>:8000/service/1
+```
+
 ## Maintainer
 
 M.-Leander Reimer (@lreimer), <mario-leander.reimer@qaware.de>
