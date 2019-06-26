@@ -1,0 +1,16 @@
+version: "2.3"
+
+services:
+  krakend-simple:
+    build:
+      context: .
+    image: krakend-simple:v1.0.0
+    mem_limit: 128m
+    ports:
+      - "8080:8080"
+    networks:
+      - krakend
+
+networks:
+  krakend:
+    driver: bridge
