@@ -12,3 +12,4 @@
 *.out
 
 envoyproxy/envoy/
+gloo/solo-docs/

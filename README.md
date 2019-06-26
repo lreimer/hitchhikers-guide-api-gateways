@@ -73,6 +73,32 @@ $ http get http://<external-ip>:8000/service/1
 $ http get http://<external-ip>:8000/service/1
 ```
 
+## Ambassador
+
+```
+$ helm upgrade --install --wait my-ambassador stable/ambassador
+$ kubectl get svc -w  --namespace default my-ambassador
+$ kubectl apply -f https://getambassador.io/yaml/tour/tour.yaml
+$ helm
+
+$ kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud info --format="value(config.account)")
+$ kubectl apply -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+```
+
+## Gloo
+
+```
+$ brew install solo-io/tap/glooctl
+$ curl -sL https://run.solo.io/gloo/install | sh
+
+$ glooctl install gateway
+$ #glooctl install gateway
+$ glooctl uninstall --all
+
+$ helm repo add gloo https://storage.googleapis.com/solo-public-helm
+$ helm install gloo/gloo --name gloo-0-7-6 --namespace gloo-system
+```
+
 ## Maintainer
 
 M.-Leander Reimer (@lreimer), <mario-leander.reimer@qaware.de>

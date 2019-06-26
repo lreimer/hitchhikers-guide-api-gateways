@@ -62,5 +62,14 @@ envoy-simple:
 	@docker tag envoy-simple:v1.0.0 lreimer/envour-simple:v1.0.0
 	@docker push lreimer/envour-simple:v1.0.0
 
+krakend-simple:
+	@docker build -t krakend-simple:v1.0.0 krakend/
+	@docker tag krakend-simple:v1.0.0 lreimer/krakend-simple:v1.0.0
+	@docker push lreimer/krakend-simple:v1.0.0
+
+gloo-sources:
+	@mkdir -p gloo && rm -rf gloo/solo-docs/
+	@git clone --depth 1 https://github.com/solo-io/solo-docs gloo/solo-docs
+
 destroy:
 	@$(GCP) container clusters delete $(NAME) --async --quiet
