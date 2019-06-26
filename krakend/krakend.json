@@ -30,6 +30,7 @@
                       "host": [
                           "https://www.google.com"
                       ],
+                      "url_pattern": "/",
                       "encoding": "no-op",
                       "extra_config": {
                           "github.com/devopsfaith/krakend-circuitbreaker/gobreaker": {
