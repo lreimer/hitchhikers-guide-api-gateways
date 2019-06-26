@@ -1,0 +1,22 @@
+version: '3.5'
+
+services:
+  ambassador:
+    image: quay.io/datawire/ambassador:0.72.0
+    ports:
+    # expose port 8080 via 8080 on the host machine
+    - 8080:8080
+    volumes:
+    # mount a volume where we can inject configuration files
+    - ./config:/ambassador/ambassador-config
+    environment:
+    # don't try to watch Kubernetes for configuration changes
+    - AMBASSADOR_NO_KUBEWATCH=no_kubewatch
+  tour-ui:
+    image: quay.io/datawire/tour:ui-0.2.1
+    ports:
+    - 5000
+  tour-backend:
+    image: quay.io/datawire/tour:backend-0.2.1
+    ports:
+    - 8080
