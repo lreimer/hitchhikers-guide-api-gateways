@@ -1,0 +1,16 @@
+version: "2.3"
+
+services:
+  hello-service:
+    build:
+      context: .
+    image: hello-service:1.0.0
+    mem_limit: 128m
+    ports:
+      - "8080:8080"
+    networks:
+      - krakend
+
+networks:
+  krakend:
+    driver: bridge

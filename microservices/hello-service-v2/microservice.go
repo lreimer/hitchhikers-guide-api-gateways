@@ -1,0 +1,39 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"encoding/json"
+	"os"
+)
+
+func main() {
+	http.HandleFunc("/api/hello", Hello)
+	http.ListenAndServe(port(), nil)
+}
+
+func port() string {
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = "8080"
+	}
+	return ":" + port
+}
+
+// Hello response structure
+type Hello struct {
+	Message string
+}
+
+// Hello to be used as http.HandleFunc for Hello API
+func Hello(w http.ResponseWriter, r *http.Request) {
+	m := Hello{"Hello Service v2."}
+  b, err := json.Marshal(m)
+
+  if err != nil {
+		panic(err)
+  }
+
+  w.Header().Add("Content-Type", "application/json; charset=utf-8")
+  w.Write(b)
+}
