@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"encoding/json"
 	"os"
 )
 
 func main() {
-	http.HandleFunc("/api/hello", Hello)
+	http.HandleFunc("/api/hello", HelloFunc)
 	http.ListenAndServe(port(), nil)
 }
 
@@ -25,8 +24,8 @@ type Hello struct {
 	Message string
 }
 
-// Hello to be used as http.HandleFunc for Hello API
-func Hello(w http.ResponseWriter, r *http.Request) {
+// HelloFunc to be used as http.HandleFunc for Hello API
+func HelloFunc(w http.ResponseWriter, r *http.Request) {
 	m := Hello{"Hello Service v2."}
   b, err := json.Marshal(m)
 
