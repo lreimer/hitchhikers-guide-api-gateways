@@ -19,7 +19,7 @@ cluster:
 
 	@$(GCP) container clusters create $(NAME) --num-nodes=5 --enable-autoscaling --min-nodes=5 --max-nodes=10
 	@$(K8S) create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$$(gcloud config get-value core/account)
-	@$(K8S) create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+	@$(K8S) kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
 	@$(K8S) cluster-info
 
 helm-install:
@@ -71,5 +71,15 @@ gloo-sources:
 	@mkdir -p gloo && rm -rf gloo/solo-docs/
 	@git clone --depth 1 https://github.com/solo-io/solo-docs gloo/solo-docs
 
+ambassador-install:
+	@$(K8S) apply -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+	@$(K8S) apply -f ambassador/ambassador-service.yaml
+	@$(K8S) apply -f ambassador/tour.yaml
+
+ambassador-delete:
+	@$(K8S) delete -f ambassador/tour.yaml
+	@$(K8S) delete -f ambassador/ambassador-service.yaml
+	@$(K8S) delete -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+	
 destroy:
 	@$(GCP) container clusters delete $(NAME) --async --quiet
