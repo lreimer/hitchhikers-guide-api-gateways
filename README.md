@@ -73,6 +73,12 @@ $ http get http://<external-ip>:8000/service/1
 $ http get http://<external-ip>:8000/service/1
 ```
 
+## KrakenD
+
+```
+$ open http://krakend.io
+```
+
 ## Ambassador
 
 ```
