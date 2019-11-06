@@ -1,0 +1,16 @@
+---
+apiVersion: getambassador.io/v1
+kind: Mapping
+metadata:
+  name: tour-backend
+spec:
+  prefix: /backend/
+  service: tour:8080
+  labels:
+    ambassador:
+      - request_label:
+        - backend
+        request_label_group:
+        - x-ambassador-test-allow:
+          header: "x-ambassador-test-allow"
+          omit_if_not_present: true

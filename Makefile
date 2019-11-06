@@ -19,7 +19,7 @@ cluster:
 
 	@$(GCP) container clusters create $(NAME) --num-nodes=5 --enable-autoscaling --min-nodes=5 --max-nodes=10
 	@$(K8S) create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$$(gcloud config get-value core/account)
-	@$(K8S) kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+	@$(K8S) apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
 	@$(K8S) cluster-info
 
 helm-install:
@@ -72,22 +72,24 @@ gloo-sources:
 	@git clone --depth 1 https://github.com/solo-io/solo-docs gloo/solo-docs
 
 ambassador-install:
-	@$(K8S) apply -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+	@$(K8S) apply -f ambassador/ambassador-rbac.yaml
 	@$(K8S) apply -f ambassador/ambassador-service.yaml
 	@$(K8S) apply -f ambassador/tour.yaml
+	@$(K8S) get service ambassador
 
 ambassador-delete:
-	@$(K8S) delete -f ambassador/tour.yaml
-	@$(K8S) delete -f ambassador/ambassador-service.yaml
-	@$(K8S) delete -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+	@$(K8S) delete -f ambassador/tour.yaml --ignore-not-found=true
+	@$(K8S) delete -f ambassador/ratelimit.yaml --ignore-not-found=true
+	@$(K8S) delete -f ambassador/ambassador-service.yaml --ignore-not-found=true
+	@$(K8S) delete -f ambassador/ambassador-rbac.yaml --ignore-not-found=true
 
 gloo-install:
-	@curl -sL https://run.solo.io/gloo/install | sh
-	@export PATH=$HOME/.gloo/bin:$PATH
 	@glooctl install gateway
-	@kubectl get pods --namespace gloo-system
+	@$(K8S) get pods --namespace gloo-system
+	@$(K8S) get service gateway-proxy-v2 --namespace gloo-system
 
 gloo-uninstall:
+	@$(K8S) delete -f https://raw.githubusercontent.com/sololabs/demos2/master/resources/petstore.yaml --ignore-not-found=true
 	@glooctl uninstall
 
 destroy:

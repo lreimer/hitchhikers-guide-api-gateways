@@ -97,14 +97,28 @@ $ helm install gloo/gloo --namespace my-namespace
 $ glooctl install gateway
 $ kubectl get pods --namespace gloo-system
 
-$ kubectl apply --filename https://raw.githubusercontent.com/sololabs/demos2/master/resources/petstore.yaml
 $ glooctl get upstreams
+$ kubectl apply --filename https://raw.githubusercontent.com/sololabs/demos2/master/resources/petstore.yaml
 $ glooctl get upstream default-petstore-8080 --output yaml
 $ glooctl add route --path-exact /sample-route-1 --dest-name default-petstore-8080 --prefix-rewrite /api/pets
 $ glooctl get virtualservice --output yaml
 $ curl $(glooctl proxy url)/sample-route-1
 
 $ glooctl uninstall
+
+$ sqoopctl install kube
+$ kubectl apply -f https://raw.githubusercontent.com/solo-io/gloo/master/example/petstore/petstore.yaml
+$ glooctl get upstreams default-petstore-8080
+$ kubectl --namespace gloo-system get upstreams default-petstore-8080 --output yaml
+$ sqoopctl schema create petstore -f gloo/petstore.graphql
+
+# register findPetById for Query.pets (specifying no arguments)
+$ sqoopctl resolvermap register --upstream default-petstore-8080 --schema petstore --function findPets Query pets
+# register a resolver for Query.pet
+$ sqoopctl resolvermap register --upstream default-petstore-8080 --schema petstore --function findPetById Query pet
+# register a resolver for Mutation.addPet
+# the request template tells Sqoop to use the Variable "pet" as an argument
+$ sqoopctl resolvermap register --upstream default-petstore-8080 --schema petstore --function addPet Mutation addPet --request-template '{{ marshal (index .Args "pet") }}'
 
 $ glooctl install knative --install-knative --install-eventing --install-monitoring
 $ kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.8.0/release.yaml
