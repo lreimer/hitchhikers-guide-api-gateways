@@ -1,4 +1,4 @@
-NAME = hitchhikers-guide-api-gateways
+NAME = api-gateways-guide
 VERSION = 1.0.0
 GCP = gcloud
 ZONE = europe-west1-b
@@ -80,6 +80,15 @@ ambassador-delete:
 	@$(K8S) delete -f ambassador/tour.yaml
 	@$(K8S) delete -f ambassador/ambassador-service.yaml
 	@$(K8S) delete -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
-	
+
+gloo-install:
+	@curl -sL https://run.solo.io/gloo/install | sh
+	@export PATH=$HOME/.gloo/bin:$PATH
+	@glooctl install gateway
+	@kubectl get pods --namespace gloo-system
+
+gloo-uninstall:
+	@glooctl uninstall
+
 destroy:
 	@$(GCP) container clusters delete $(NAME) --async --quiet

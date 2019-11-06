@@ -79,10 +79,10 @@ $ http get http://<external-ip>:8000/service/1
 $ helm upgrade --install --wait my-ambassador stable/ambassador
 $ kubectl get svc -w  --namespace default my-ambassador
 $ kubectl apply -f https://getambassador.io/yaml/tour/tour.yaml
-$ helm
 
 $ kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud info --format="value(config.account)")
 $ kubectl apply -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
+
 ```
 
 ## Gloo
@@ -91,12 +91,28 @@ $ kubectl apply -f https://getambassador.io/yaml/ambassador/ambassador-rbac.yaml
 $ brew install solo-io/tap/glooctl
 $ curl -sL https://run.solo.io/gloo/install | sh
 
-$ glooctl install gateway
-$ #glooctl install gateway
-$ glooctl uninstall --all
-
 $ helm repo add gloo https://storage.googleapis.com/solo-public-helm
-$ helm install gloo/gloo --name gloo-0-7-6 --namespace gloo-system
+$ helm install gloo/gloo --namespace my-namespace
+
+$ glooctl install gateway
+$ kubectl get pods --namespace gloo-system
+
+$ kubectl apply --filename https://raw.githubusercontent.com/sololabs/demos2/master/resources/petstore.yaml
+$ glooctl get upstreams
+$ glooctl get upstream default-petstore-8080 --output yaml
+$ glooctl add route --path-exact /sample-route-1 --dest-name default-petstore-8080 --prefix-rewrite /api/pets
+$ glooctl get virtualservice --output yaml
+$ curl $(glooctl proxy url)/sample-route-1
+
+$ glooctl uninstall
+
+$ glooctl install knative --install-knative --install-eventing --install-monitoring
+$ kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.8.0/release.yaml
+
+$ kubectl get pods --namespace knative-serving
+$ kubectl get pods --namespace knative-eventing
+$ kubectl get pods --namespace knative-monitoring
+$ kubectl get pods --namespace tekton-pipelines
 ```
 
 ## Maintainer
