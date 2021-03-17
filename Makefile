@@ -19,7 +19,7 @@ cluster:
 
 	@$(GCP) container clusters create $(NAME) --num-nodes=5 --enable-autoscaling --min-nodes=5 --max-nodes=10
 	@$(K8S) create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$$(gcloud config get-value core/account)
-	@$(K8S) apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+	# @$(K8S) apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
 	@$(K8S) cluster-info
 
 helm-install:
@@ -63,9 +63,9 @@ envoy-simple:
 	@docker push lreimer/envour-simple:v1.0.0
 
 krakend-simple:
-	@docker build -t krakend-simple:v1.0.0 krakend/
-	@docker tag krakend-simple:v1.0.0 lreimer/krakend-simple:v1.0.0
-	@docker push lreimer/krakend-simple:v1.0.0
+	@docker build -t krakend-simple:v1.3.0 krakend/
+	@docker tag krakend-simple:v1.3.0 lreimer/krakend-simple:v1.3.0
+	@docker push lreimer/krakend-simple:v1.3.0
 
 gloo-sources:
 	@mkdir -p gloo && rm -rf gloo/solo-docs/

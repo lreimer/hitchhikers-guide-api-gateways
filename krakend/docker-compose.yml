@@ -4,7 +4,7 @@ services:
   krakend-simple:
     build:
       context: .
-    image: krakend-simple:v1.0.0
+    image: krakend-simple:v1.3.0
     mem_limit: 128m
     ports:
       - "8080:8080"
